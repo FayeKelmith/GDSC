@@ -1,0 +1,24 @@
+services:
+  redis-db:
+    image: redis
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    command: redis-server --loglevel warning
+    volumes:
+      - cache:/data
+    restart: always
+  streamlit-app:
+    build: .
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=redis-db
+
+volumes:
+  cache:
+    driver: local

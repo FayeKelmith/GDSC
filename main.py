@@ -16,10 +16,12 @@ load_dotenv()
 
 
 openai_key = os.getenv("OPENAI_API_KEY")
-REDIS_URL="redis://localhost:6379/0"
 
-redis_client = redis.Redis(host='localhost', port=6379, db=0)
+REDIS_URL="redis://redis-db:6379/0"
 
+redis_client = redis.Redis(host='redis-db', port=6379, db=0)
+
+print("Connected to Redis")
 st.set_page_config(page_title='Chatbot', page_icon='💻')
 
 st.title('Welcome :blue[GDSC]')
@@ -61,9 +63,9 @@ chain = prompt | llm | output_parser
 
 chain_with_history = RunnableWithMessageHistory(
     chain,
-    lambda session_id: RedisChatMessageHistory(
-        session_id, url="redis://localhost:6379"
-    ), # Always return the instance created earlier
+lambda session_id: RedisChatMessageHistory(
+    session_id, url="redis://redis-db:6379"
+), # Always return the instance created earlier
     input_messages_key="question",
     history_messages_key="history",
 )
