@@ -8,3 +8,4 @@ langchain-community
 redis
 beautifulsoup4
 langchain-chroma
+pdfplumber

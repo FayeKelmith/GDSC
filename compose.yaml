@@ -3,11 +3,18 @@ services:
     image: redis
     ports:
       - "6379:6379"
-      - "8001:8001"
     command: redis-server --loglevel warning
     volumes:
       - cache:/data
     restart: always
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis-db:6379
+    ports:
+      - "8001:8081"
+
   streamlit-app:
     build: .
     ports:
