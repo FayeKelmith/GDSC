@@ -1,5 +1,5 @@
 import streamlit as st
-from langchain.llms import OpenAI
+from langchain_openai import OpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
@@ -8,7 +8,6 @@ from langchain_community.chat_message_histories import RedisChatMessageHistory
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
-from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.output_parsers import StrOutputParser
 import os
 from dotenv import load_dotenv
@@ -61,8 +60,7 @@ contextualize_q_prompt = ChatPromptTemplate.from_messages(
 #Answer question
 TEMPLATE = """You are an assistant for question-answering tasks. \
 Use the following pieces of retrieved context to answer the question. \
-If you don't know the answer, just say that you don't know. \
-Use three sentences maximum and keep the answer concise.\
+If you don't know the answer, just say that you don't know.\
 
 {context}"""
 qa_prompt = ChatPromptTemplate.from_messages(
