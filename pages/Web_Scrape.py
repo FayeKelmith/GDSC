@@ -1,8 +1,8 @@
 import streamlit as  st 
-from langchain.llms import OpenAI 
+from langchain_community.llms import OpenAI 
 from langchain_text_splitters import RecursiveCharacterTextSplitter 
-from langchain.embeddings import OpenAIEmbeddings 
-from langchain.vectorstores import Chroma 
+from langchain_openai import OpenAIEmbeddings 
+from langchain_community.vectorstores import Chroma 
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain_community.chat_message_histories import RedisChatMessageHistory 
 from langchain.chains.combine_documents import create_stuff_documents_chain 
@@ -70,9 +70,9 @@ qa_prompt = ChatPromptTemplate.from_messages(
 )
 
 #========================= 
-if "loaded" not in st.session_state:
-    st.session_state.loaded = False
 
+if "retriever" not in st.session_state:
+    st.session_state.retriever = None
 
 
 st.title(":red[Web scrape] Chat bot")
@@ -80,22 +80,22 @@ st.title(":red[Web scrape] Chat bot")
 st.markdown("### Please enter link to website containing information you want to know about")
 
 link = st.text_input("Enter link here")
-
-retriever = None
-if st.button("Submit"):
-    st.session_state.loaded = True
-    docs = extract_data(link)
+# retriever = None
+if st.button("Submit") and st.session_state.retriever is None:
     
+    docs = extract_data(link)
+    st.write(docs)
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
     documents = text_splitter.create_documents(docs)
     
     vectorstore = Chroma.from_documents(documents, OpenAIEmbeddings())
     
-    retriever = vectorstore.as_retriever()
+    st.session_state.retriever = vectorstore.as_retriever()
 
   
-if st.session_state.loaded:
-    history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_q_prompt)
+if st.session_state.retriever is not None:
+    st.write("Retriever got : ", st.session_state.retriever.invoke("What is the content of this document?"))
+    history_aware_retriever = create_history_aware_retriever(llm, st.session_state.retriever, contextualize_q_prompt)
     
     question_answer_chain = create_stuff_documents_chain(llm=llm, prompt=qa_prompt,output_parser=output_parser)
     
@@ -103,7 +103,7 @@ if st.session_state.loaded:
     
     conversational_rag_chain = RunnableWithMessageHistory(rag_chain, lambda session_id : RedisChatMessageHistory( session_id, url=REDIS_URL), input_messages_key="input", history_messages_key="history", output_messages_key="answer",)
     
-    st.write("Chat history")
+    
     for msg in history[::-1]:
         st.chat_message(msg['type']).write(msg['data']['content'])
         
