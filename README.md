@@ -1,6 +1,6 @@
 <h1> A <span style="color:#1D63ED";>GDSC</span> Workshop on how how to build a Chat Bot</h1>
 <h2> by Faye Kelmith  Organized <span style="color:#1D63ED";>GDSC Bamenda </span> </h2>
-<img src="./store/GDSC _logo.png" style="height:600px" alt="GDSC"/>
+<img src="./store/GDSC _logo.png" style="height:600px;width:100%;" alt="GDSC"/>
 
 ## Introduction
 
