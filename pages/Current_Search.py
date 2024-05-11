@@ -3,11 +3,9 @@ import streamlit as st
 from langchain_community.chat_message_histories import (
     StreamlitChatMessageHistory,
 )
-import getpass
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_openai import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from dotenv import load_dotenv
 import os
 from langchain_core.output_parsers import StrOutputParser
@@ -18,7 +16,7 @@ load_dotenv()
 
 openai_key = os.getenv("OPENAI_API_KEY")
 tavily_key = os.getenv("TAVILY_API_KEY")
-retriever = TavilySearchAPIRetriever(api_key=tavily_key,k=3)
+tool = TavilySearchAPIRetriever(api_key=tavily_key,k=3)
 
 history = StreamlitChatMessageHistory()
 
@@ -35,7 +33,7 @@ Question: {question}"""
 
 
 chain = (
-    RunnablePassthrough.assign(context=(lambda x: x["question"]) | retriever)
+    RunnablePassthrough.assign(context=(lambda x: x["question"]) | tool)
     | prompt
     | ChatOpenAI(api_key=openai_key, temperature=0.7)
     | StrOutputParser()

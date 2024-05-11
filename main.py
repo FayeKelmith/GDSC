@@ -38,7 +38,6 @@ llm = ChatOpenAI(api_key=openai_key, temperature=temperature)
 
  
 list_from_redis = redis_client.lrange("message_store:chat_history", 0, -1)
-
 history = [json.loads(item.decode('utf-8')) for item in list_from_redis]
 
 output_parser = StrOutputParser()
@@ -80,6 +79,3 @@ if prompt:= st.chat_input():
     response = chain_with_history.invoke({"question": prompt}, config)
     st.chat_message("ai").write(response)
     
-
-#NOTE: To track different conversations, you can use the session_id to differentiate between them.
-

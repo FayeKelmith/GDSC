@@ -71,14 +71,10 @@ qa_prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
-
-
 st.title("RAG Chatbot with :orange[Document Upload]")
-
 st.markdown("### Please upload a PDF document")
 
 uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
-
 retriever = None
 if uploaded_file is not None:
     docs = extract_data(uploaded_file)
@@ -87,8 +83,7 @@ if uploaded_file is not None:
     documents = text_splitter.create_documents(docs)
     vectorestore = Chroma.from_documents(documents, OpenAIEmbeddings())
     
-    retriever = vectorestore.as_retriever()
-    
+    retriever = vectorestore.as_retriever()    
 
 
 if retriever is not None:
@@ -119,14 +114,3 @@ if retriever is not None:
         st.chat_message("ai").write(response["answer"])
 else:
     st.info("Please upload a PDF document to continue")
-
-
-
-
-
-    
-# rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
-
-
-
-
