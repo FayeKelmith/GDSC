@@ -1,12 +1,9 @@
 streamlit
 tavily-python
-pypdf
 python-dotenv
 langchain
 langchain-openai
 langchain-community
 redis
-beautifulsoup4
 langchain-chroma
 pdfplumber
-playwright
